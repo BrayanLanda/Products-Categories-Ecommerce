@@ -39,11 +39,10 @@ public class CategoryRepository : ICategoryRepository
         return _context.Categories.OrderBy(c => c.Name).ToList();
     }
 
-    public Category GetCategory(int id)
+    public Category? GetCategory(int id)
     {
-        return _context.Categories.FirstOrDefault(c => c.Id == id) ?? throw new InvalidOperationException("Category not found");
+        return _context.Categories.FirstOrDefault(c => c.Id == id);
     }
-
     public bool Save()
     {
         return _context.SaveChanges() > 0 ? true : false;

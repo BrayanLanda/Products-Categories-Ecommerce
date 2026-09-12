@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
@@ -23,10 +24,24 @@ public class CategoryController : ControllerBase
     {
         var categories = _categoryRepository.GetCategories();
         var categoriesDto = new List<CategoryDto>();
-        foreach(var category in categories)
+        foreach (var category in categories)
         {
             categoriesDto.Add(_mapper.Map<CategoryDto>(categories));
         }
         return Ok(categoriesDto);
+    }
+
+    [HttpGet("{id:int}", Name = "GetCategory")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetCategory(int id)
+    {
+        var category = _categoryRepository.GetCategory(id);
+        if(category is null) NotFound("Category not found");
+        var categoryDto = _mapper.Map<CategoryDto>(category);
+        
+        return Ok(categoryDto);
     }
 }

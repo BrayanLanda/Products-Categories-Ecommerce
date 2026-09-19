@@ -61,7 +61,7 @@ public class ProductController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        if (_categoryRepository.CategoryExists(createProductDto.CategoryId))
+        if (!_categoryRepository.CategoryExists(createProductDto.CategoryId))
         {
             ModelState.AddModelError("CustomError", "Category already exists");
             return BadRequest(ModelState);
@@ -73,6 +73,8 @@ public class ProductController : ControllerBase
             ModelState.AddModelError("CustomError", $"Something went wrong {product.Name}");
             return StatusCode(500, ModelState);
         }
-        return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, product);
+        var createProduct = _productRepository.GetProduct(product.ProductId);
+        var productDto = _mapper.Map<ProductDto>(createProduct);
+        return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, productDto);
     }
 }

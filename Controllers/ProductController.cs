@@ -105,4 +105,28 @@ public class ProductController : ControllerBase
 
         return Ok(productsDto);
     }
+
+    [HttpPatch("buyProduct/{name}/{quantity:int}", Name = "BuyProduct")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult BuyProduct(string name, int quantity)
+    {
+        if(string.IsNullOrWhiteSpace(name) || quantity <= 0)
+        {
+            return BadRequest("The product name or the quantity is invalid");
+        }
+        var foundProduct = _productRepository.ProductExists(name);
+        if(!foundProduct)
+        {
+            return NotFound("The product with the name not exists");
+        }
+        if(!_productRepository.BuyProduct(name, quantity))
+        {
+            ModelState.AddModelError("CustomError", "The product could be purchased, or the quantity requested exceeds the stock availeble");
+            return BadRequest(ModelState);
+        }
+        return Ok("Units of the product were purchased");    
+    }
 }

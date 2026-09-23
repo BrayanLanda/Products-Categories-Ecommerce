@@ -13,9 +13,9 @@ public class ProductRepository : IProductRepository
     }
     public bool BuyProduct(string name, int quantity)
     {
-        if(string.IsNullOrWhiteSpace(name) || quantity <= 0) return false;
+        if (string.IsNullOrWhiteSpace(name) || quantity <= 0) return false;
         var product = _db.Products.FirstOrDefault(p => p.Name.ToLower().Trim() == name.ToLower().Trim());
-        if(product == null || product.Stock < quantity) return false;
+        if (product == null || product.Stock < quantity) return false;
         product.Stock -= quantity;
         _db.Products.Update(product);
         return Save();
@@ -23,23 +23,23 @@ public class ProductRepository : IProductRepository
 
     public bool CreateProduct(Product product)
     {
-       if(product == null) return false;
-       product.CreationDate = DateTime.Now;
-       product.UpdateDate = DateTime.Now;
-       _db.Products.Add(product);
-       return Save();
+        if (product == null) return false;
+        product.CreationDate = DateTime.Now;
+        product.UpdateDate = DateTime.Now;
+        _db.Products.Add(product);
+        return Save();
     }
 
     public bool DeleteProduct(Product product)
     {
-        if(product == null) return false;
+        if (product == null) return false;
         _db.Products.Remove(product);
         return Save();
     }
 
     public Product? GetProduct(int id)
     {
-        if(id <= 0) return null;
+        if (id <= 0) return null;
         return _db.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == id);
     }
 
@@ -50,19 +50,19 @@ public class ProductRepository : IProductRepository
 
     public ICollection<Product> GetProductsForCategory(int categoryId)
     {
-        if(categoryId <= 0) return new List<Product>();
+        if (categoryId <= 0) return new List<Product>();
         return _db.Products.Include(p => p.Category).Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name).ToList();
     }
 
     public bool ProductExists(int id)
     {
-        if(id <= 0) return false;
+        if (id <= 0) return false;
         return _db.Products.Any(p => p.ProductId == id);
     }
 
     public bool ProductExists(string name)
     {
-        if(string.IsNullOrWhiteSpace(name)) return false;
+        if (string.IsNullOrWhiteSpace(name)) return false;
         return _db.Products.Any(p => p.Name.ToLower().Trim() == name.ToLower().Trim());
     }
 
@@ -75,7 +75,7 @@ public class ProductRepository : IProductRepository
     {
         IQueryable<Product> query = _db.Products;
         var searchTermLowered = searchTerm.ToLower().Trim();
-        if(!string.IsNullOrEmpty(searchTerm))
+        if (!string.IsNullOrEmpty(searchTerm))
         {
             query = query.Include(p => p.Category).Where(p => p.Name.ToLower().Trim().Contains(searchTermLowered) || p.Description.ToLower().Trim().Contains(searchTermLowered));
         }
@@ -84,7 +84,7 @@ public class ProductRepository : IProductRepository
 
     public bool UpdateProduct(Product product)
     {
-        if(product == null) return false;
+        if (product == null) return false;
         product.UpdateDate = DateTime.Now;
         _db.Products.Update(product);
         return Save();

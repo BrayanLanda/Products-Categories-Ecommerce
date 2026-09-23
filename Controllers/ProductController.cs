@@ -113,20 +113,68 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult BuyProduct(string name, int quantity)
     {
-        if(string.IsNullOrWhiteSpace(name) || quantity <= 0)
+        if (string.IsNullOrWhiteSpace(name) || quantity <= 0)
         {
             return BadRequest("The product name or the quantity is invalid");
         }
         var foundProduct = _productRepository.ProductExists(name);
-        if(!foundProduct)
+        if (!foundProduct)
         {
             return NotFound("The product with the name not exists");
         }
-        if(!_productRepository.BuyProduct(name, quantity))
+        if (!_productRepository.BuyProduct(name, quantity))
         {
             ModelState.AddModelError("CustomError", "The product could be purchased, or the quantity requested exceeds the stock availeble");
             return BadRequest(ModelState);
         }
-        return Ok("Units of the product were purchased");    
+        return Ok("Units of the product were purchased");
+    }
+
+    [HttpPut("{productId:int}", Name = "UpdateProduct")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult UpdateProduct(int productId, [FromBody] UpdateProductDto updateProductDto)
+    {
+        if (updateProductDto == null) return BadRequest(ModelState);
+
+        if (!_productRepository.ProductExists(productId))
+        {
+            ModelState.AddModelError("CustomError", "Product already exists");
+            return BadRequest(ModelState);
+        }
+
+        if (!_categoryRepository.CategoryExists(updateProductDto.CategoryId))
+        {
+            ModelState.AddModelError("CustomError", "Category already exists");
+            return BadRequest(ModelState);
+        }
+
+        var product = _mapper.Map<Product>(updateProductDto);
+        product.ProductId = productId;
+        if (!_productRepository.UpdateProduct(product))
+        {
+            ModelState.AddModelError("CustomError", $"Something went wrong {product.Name}");
+            return StatusCode(500, ModelState);
+        }
+        return NoContent();
+    }
+
+
+    [HttpDelete("{productId:int}", Name = "DeleteProduct")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public IActionResult DeleteProduct(int productId)
+    {
+        if(productId == 0) return BadRequest(ModelState);
+        var product = _productRepository.GetProduct(productId);
+        if (product is null) NotFound("product not found");
+        var productDto = _mapper.Map<ProductDto>(product);
+
+        return Ok(productDto);
     }
 }

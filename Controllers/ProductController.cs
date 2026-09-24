@@ -172,9 +172,13 @@ public class ProductController : ControllerBase
     {
         if(productId == 0) return BadRequest(ModelState);
         var product = _productRepository.GetProduct(productId);
-        if (product is null) NotFound("product not found");
-        var productDto = _mapper.Map<ProductDto>(product);
+        if (product == null) NotFound("product not found");
+        if (!_productRepository.DeleteProduct(product!))
+        {
+            ModelState.AddModelError("CustomError", $"Something went wrong {product!.Name}");
+            return StatusCode(500, ModelState);
+        }
 
-        return Ok(productDto);
+        return NoContent();
     }
 }

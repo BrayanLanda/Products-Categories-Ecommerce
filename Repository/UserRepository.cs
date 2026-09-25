@@ -13,17 +13,17 @@ public class UserRepository : IUserRepository
     }
     public User? GetUser(int id)
     {
-        throw new NotImplementedException();
+        return _db.Users.FirstOrDefault(u => u.Id == id);
     }
 
     public ICollection<User> GetUsers()
     {
-        throw new NotImplementedException();
+        return _db.Users.OrderBy(u => u.Name).ToList();
     }
 
     public bool IsUniqueUser(string username)
     {
-        throw new NotImplementedException();
+        return !_db.Users.Any(u => u.Username.ToLower().Trim() == username.ToLower().Trim());
     }
 
     public Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)

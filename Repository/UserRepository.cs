@@ -7,9 +7,11 @@ namespace ApiEcommerce.Repository;
 public class UserRepository : IUserRepository
 {
     public readonly ApplicationDbContext _db;
-    public UserRepository(ApplicationDbContext db)
+    private string? secretKey;
+    public UserRepository(ApplicationDbContext db, IConfiguration configuration)
     {
         _db = db;
+        secretKey = configuration.GetValue<string>("ApiSettings:SecretKey");
     }
     public User? GetUser(int id)
     {

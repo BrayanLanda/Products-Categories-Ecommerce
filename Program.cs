@@ -14,6 +14,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<CategoryProfile>()
 );
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<ProductProfile>()
 );

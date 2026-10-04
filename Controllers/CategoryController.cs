@@ -2,12 +2,14 @@ using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;
@@ -18,6 +20,7 @@ public class CategoryController : ControllerBase
         _mapper = mapper;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -32,6 +35,7 @@ public class CategoryController : ControllerBase
         return Ok(categoriesDto);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}", Name = "GetCategory")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -56,6 +56,17 @@ builder.Services.AddControllers(option =>
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+var apiVersioningBuilder = builder.Services.AddApiVersioning(option =>
+{
+    option.AssumeDefaultVersionWhenUnspecified = true;
+    option.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    option.ReportApiVersions = true;
+});
+apiVersioningBuilder.AddApiExplorer(option =>
+{
+    option.GroupNameFormat = "'v'VVV"; // v1,v2,v3...
+    option.SubstituteApiVersionInUrl = true; // api/v{version}/rute
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(PolicyNames.AllowSpecificOrigin,

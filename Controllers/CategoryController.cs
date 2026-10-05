@@ -1,3 +1,4 @@
+using ApiEcommerce.Constants;
 using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository;
@@ -37,6 +38,7 @@ public class CategoryController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id:int}", Name = "GetCategory")]
+    [ResponseCache(CacheProfileName = CacheProfiles.Default10)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

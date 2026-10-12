@@ -2,6 +2,7 @@ using System.Text;
 using ApiEcommerce.Constants;
 using ApiEcommerce.Data;
 using ApiEcommerce.Mapping;
+using ApiEcommerce.Models;
 using ApiEcommerce.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -50,7 +51,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<ProductProfile>()
 );
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 builder.Services.AddControllers(option =>

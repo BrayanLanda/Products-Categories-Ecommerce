@@ -7,7 +7,6 @@ public static class DataSeeder
 {
     public static void SeedData(ApplicationDbContext appContext)
     {
-        // Seeding de Roles
         if (!appContext.Roles.Any())
         {
             appContext.Roles.AddRange(
@@ -15,7 +14,7 @@ public static class DataSeeder
               new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" }
             );
         }
-        // Seeding de Categorías
+
         if (!appContext.Categories.Any())
         {
             appContext.Categories.AddRange(
@@ -26,7 +25,7 @@ public static class DataSeeder
               new Category { Name = "Libros", CreationDate = DateTime.Now }
             );
         }
-        // Seeding de Usuario Administrador
+        
         if (!appContext.ApplicationUsers.Any())
         {
             var hasher = new PasswordHasher<ApplicationUser>();
@@ -56,7 +55,7 @@ public static class DataSeeder
 
             appContext.ApplicationUsers.AddRange(adminUser, regularUser);
         }
-        // Seeding de UserRoles
+        
         if (!appContext.UserRoles.Any())
         {
             appContext.UserRoles.AddRange(
@@ -65,7 +64,7 @@ public static class DataSeeder
             );
         }
 
-        // Seeding de Productos
+       
         if (!appContext.Products.Any())
         {
             appContext.Products.AddRange(
